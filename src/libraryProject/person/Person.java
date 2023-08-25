@@ -29,4 +29,12 @@ public abstract class Person {
     public int hashCode() {
         return Objects.hash(personId);
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "personId=" + personId +
+                ", fullName='" + fullName + '\'' +
+                "}";
+    }
 }

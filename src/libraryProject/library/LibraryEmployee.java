@@ -7,15 +7,13 @@ import libraryProject.person.Author;
 import libraryProject.person.LibraryMember;
 import libraryProject.person.Person;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Member;
+import java.util.*;
 
 public class LibraryEmployee extends Person implements Manageable {
     private int personId;
 
-    private static Library library = new Library();
+    private Library library = Library.getInstance();
 
 
     public LibraryEmployee(String fullName) {
@@ -41,6 +39,10 @@ public class LibraryEmployee extends Person implements Manageable {
     public Map<Integer, Book> showAllBooksInLibrary(){
         return library.getBookList();
     }
+    public Map<Person, Set<Book>> showAllMembersInLibrary(){
+        return library.getMembers();
+    }
+
 
     @Override
     public void addBook(Book book) {
@@ -95,38 +97,21 @@ public class LibraryEmployee extends Person implements Manageable {
         return library.getBookList().get(id);
     }
 
-    public Map<Person, Set<Book>> showAllMembersInLibrary(){
-        return library.getMembers();
+
+    @Override
+    public List<Book> findBookByKey(Object key){
+        List<Book> returnList = new ArrayList<>();
+        for (Book item : library.getBookList().values()) {
+            if (key instanceof String && item.getTitle().contains((String) key)
+                    || key instanceof Person && item.getAuthor().equals(key)
+                    || key instanceof Category && item.getCategory().equals(key)) {
+                returnList.add(item);
+            }
+        }
+        return returnList;
     }
 
-    public List<Book> findBookByKey(Object title){
-        List<Book> returnList = new ArrayList<>();
-        library.getBookList().values().forEach(item ->{
-            if(item.getTitle().contains((String)title)){
-                returnList.add(item);
-            }
-        });
-        return returnList;
-    }
-    // TODO: findBookByKey methodunu teke düşşür.(Objecct key)
-    public List<Book> findBookByKey(Person author){
-        List<Book> returnList = new ArrayList<>();
-        library.getBookList().values().forEach(item ->{
-            if(item.getAuthor().equals(author)){
-                returnList.add(item);
-            }
-        });
-        return returnList;
-    }
-    public List<Book> findBookByKey(Category category){
-        List<Book> returnList = new ArrayList<>();
-        library.getBookList().values().forEach(item ->{
-            if(item.getCategory().equals(category)){
-                returnList.add(item);
-            }
-        });
-        return returnList;
-    }
+    @Override
     public void updateBook(Integer id, Book book){
         try{
             deleteBook(findBookById(id));
@@ -134,6 +119,36 @@ public class LibraryEmployee extends Person implements Manageable {
         } catch (Exception e){
             System.out.println("Verilen kitap sistemde kayıtlı değildir, kitabı kaydedin.");
         }
+    }
+
+    @Override
+    public void giveBookToMember(Book book, Person member) {
+        if (library.getMembers().containsKey(member)){
+            if (library.getBookList().containsKey(book.getId())){
+                if (library.getMembers().get(member).size() < 6){
+                    if (((LibraryMember)member).getMoney() >=50){
+                        Set<Book> membersBookList = library.getMembers().get(member);
+                        membersBookList.add(book);
+                        ((LibraryMember)member).setMoney(((LibraryMember)member).getMoney() - 50);
+                    }else {
+                        System.out.println("Bakiye yetersiz!");
+                    }
+                } else {
+                    System.out.println("Bir üye en fazla 5 adet kitap ödünç alabilir!.");
+                }
+            } else {
+                System.out.println("Bu kitap kütüphaneye kayıtlı değil!");
+            }
+        } else {
+            System.out.println("Bu kişi kütüphaneye kayıtlı değil!");
+        }
+    }
+
+    @Override
+    public void takeBookFromMember(Book book, Person member) {
+        Set<Book> membersBookList = library.getMembers().get(member);
+        membersBookList.remove(book);
+        ((LibraryMember)member).setMoney(((LibraryMember)member).getMoney() + 50);
     }
 
 }

@@ -48,6 +48,6 @@ public class LibraryMember extends Person{
                 ", borrowedList=" + borrowedList +
                 ", personId=" + personId +
                 ", fullName='" + fullName + '\'' +
-                '}';
+                "}\n";
     }
 }

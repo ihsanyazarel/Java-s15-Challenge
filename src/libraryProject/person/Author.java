@@ -29,10 +29,13 @@ public class Author extends Person {
 
     @Override
     public String toString() {
-        return "Author{" +
-                "books=" + books +
-                ", personId=" + personId +
-                ", fullName='" + fullName + '\'' +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        builder.append("Person Id: ");
+        builder.append(getPersonId());
+        builder.append(" - Full Name: ");
+        builder.append(super.fullName);
+        builder.append(" - Books: ");
+        builder.append(books);
+        return builder.toString();
     }
 }

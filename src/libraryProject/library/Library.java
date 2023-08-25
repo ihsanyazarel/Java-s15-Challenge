@@ -6,14 +6,23 @@ import libraryProject.person.Person;
 import java.util.*;
 
 class Library {
+    public static Library instance = null;
     private Map<Integer, Book> books;
     private Map<Person, Set<Book>> members;
     private Map<Integer, Integer> borrowedBooks;
 
-    protected Library() {
+    private Library() {
         this.books = new HashMap<>();
         this.members = new HashMap<>();
         this.borrowedBooks = new HashMap<>();
+    }
+
+    public static Library getInstance(){
+        if (instance == null) {
+            return new Library();
+        } else {
+            return instance;
+        }
     }
 
 

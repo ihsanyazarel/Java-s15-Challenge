@@ -34,11 +34,17 @@ public abstract class Book {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", author=" + author +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        builder.append("Book Id= ");
+        builder.append(id);
+        builder.append(" - Book Title= ");
+        builder.append(title);
+        builder.append(" - Book Category= ");
+        builder.append(getCategory());
+        builder.append(" - Author= (");
+        builder.append(getAuthor());
+        builder.append(")\n");
+        return builder.toString();
     }
 
     @Override
